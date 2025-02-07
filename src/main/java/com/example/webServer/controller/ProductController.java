@@ -12,19 +12,20 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 public class ProductController {
 
 
     @Autowired
-    ProductService ProdService;
+    private ProductService productService;
+
 
 
     @GetMapping("/products")
     public ResponseEntity<?> getAllProductData() {
         System.out.println("Get all products called !!");
 
-        List<Product> data = ProdService.getAllProduct();
+        List<Product> data = productService.getAllProduct();
 
         if (data == null || data.isEmpty()) {
             return new ResponseEntity<>("No products found", HttpStatus.NOT_FOUND);
@@ -34,7 +35,7 @@ public class ProductController {
     }
     @GetMapping("/products/{prodId}")
     public ResponseEntity<?> getProductById(@PathVariable String prodId){
-        Product data = ProdService.getProductById(prodId);
+        Product data = productService.getProductById(prodId);
         if (data == null) {
             return new ResponseEntity<>("No products found", HttpStatus.NOT_FOUND);
         }
@@ -44,7 +45,7 @@ public class ProductController {
     @PostMapping("/products")
     public ResponseEntity<Product> createProduct(@RequestBody Product data) {
         System.out.println(data);
-        Product prod = ProdService.saveProduct(data);
+        Product prod = productService.saveProduct(data);
         return new ResponseEntity<>(prod, HttpStatus.OK);
     }
 
@@ -52,10 +53,10 @@ public class ProductController {
 
     @PutMapping("/products/{prodId}")
     public ResponseEntity<?> increaseStocks(@PathVariable String prodId){
-        Product prod = ProdService.getProductById(prodId);
+        Product prod = productService.getProductById(prodId);
         if(prod!=null){
             prod.setQuantity(prod.getQuantity()+1);
-            ProdService.saveProduct(prod);
+            productService.saveProduct(prod);
             return new ResponseEntity<>(prod,HttpStatus.OK);
         }
         else{

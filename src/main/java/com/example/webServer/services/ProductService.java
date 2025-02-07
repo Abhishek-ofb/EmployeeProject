@@ -11,16 +11,16 @@ import java.util.List;
 public class ProductService {
 
     @Autowired
-    ProductRepo repo;
+    private ProductRepo productRepo;
 
     public List<Product> getAllProduct(){
-        return repo.findAll();
+        return productRepo.findAll();
     }
     public Product getProductById(String id) {
-        return repo.findById(id).orElse(null);
+        return productRepo.findById(id).orElse(null);
     }
     public Product  saveProduct(Product data){
-        return repo.save(data);
+        return productRepo.save(data);
     }
 
 }
