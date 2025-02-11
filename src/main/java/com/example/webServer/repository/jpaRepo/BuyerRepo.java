@@ -1,4 +1,4 @@
-package com.example.webServer.repository;
+package com.example.webServer.repository.jpaRepo;
 
 import com.example.webServer.model.Buyer;
 import org.springframework.data.jpa.repository.JpaRepository;

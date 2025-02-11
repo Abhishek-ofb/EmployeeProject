@@ -4,7 +4,7 @@ package com.example.webServer.services;
 import com.example.webServer.model.Buyer;
 import com.example.webServer.model.Orders;
 import com.example.webServer.model.Product;
-import com.example.webServer.repository.OrderRepo;
+import com.example.webServer.repository.jpaRepo.OrderRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

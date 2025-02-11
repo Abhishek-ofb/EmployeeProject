@@ -2,7 +2,7 @@ package com.example.webServer.services;
 
 
 import com.example.webServer.model.Buyer;
-import com.example.webServer.repository.BuyerRepo;
+import com.example.webServer.repository.jpaRepo.BuyerRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

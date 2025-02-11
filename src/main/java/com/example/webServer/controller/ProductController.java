@@ -2,6 +2,8 @@ package com.example.webServer.controller;
 
 
 import com.example.webServer.model.Product;
+import com.example.webServer.model.ProductDocument;
+import com.example.webServer.services.ProductDocumentService;
 import com.example.webServer.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +20,8 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
-
+    @Autowired
+    private ProductDocumentService productDocumentService;
 
 
     @GetMapping("/products")
@@ -49,20 +52,59 @@ public class ProductController {
         return new ResponseEntity<>(prod, HttpStatus.OK);
     }
 
+    @GetMapping("/searchProducts")
+    public ResponseEntity<?> searchProductByName(@RequestParam String searchParam){
+        List<ProductDocument> response= productDocumentService.searchByName(searchParam);
+        if(response!=null){
+            return new ResponseEntity<>(response,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    }
 
+
+    @GetMapping("/filterData")
+    public ResponseEntity<?> filterProducts(
+            @RequestParam(required = false) String searchParam,
+            @RequestParam(required = false) Integer minPrice,
+            @RequestParam(required = false) Integer maxPrice,
+            @RequestParam(required = false) Integer quantity
+    ){
+        List<ProductDocument> response = productDocumentService.filterData(
+                searchParam,
+                minPrice != null ? minPrice : 0,
+                maxPrice != null ? maxPrice : Integer.MAX_VALUE,
+                quantity != null ? quantity : 0
+        );
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
 
     @PutMapping("/products/{prodId}")
     public ResponseEntity<?> increaseStocks(@PathVariable String prodId){
-        Product prod = productService.getProductById(prodId);
-        if(prod!=null){
-            prod.setQuantity(prod.getQuantity()+1);
-            productService.saveProduct(prod);
-            return new ResponseEntity<>(prod,HttpStatus.OK);
+        Product response = productService.incrementProductQuantity(prodId);
+        if(response!=null){
+            return new ResponseEntity<>(response,HttpStatus.OK);
         }
         else{
             return new ResponseEntity<>("No product Found",  HttpStatus.NOT_FOUND);
         }
+    }
 
+    @PutMapping("/products/update/{prodId}")
+    public ResponseEntity<?> updateProduct(@PathVariable String prodId,@RequestBody Product productData) {
+        Product response = productService.updateProductById(prodId, productData);
+        if(response!=null){
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+         return new ResponseEntity<>("No data Found", HttpStatus.NOT_FOUND);
+    }
+
+    @DeleteMapping("/products/{prodId}")
+    public ResponseEntity<?> deleteProduct(@PathVariable String prodId){
+        boolean response = productService.deleteProduct(prodId);
+        if(response){
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Data not found", HttpStatus.NOT_FOUND);
     }
 
 }
